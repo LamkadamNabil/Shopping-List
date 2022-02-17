@@ -28,10 +28,10 @@ export default function App() {
              onPress={submitHandler}
           />
       </View>
-   <FlatList
-   data ={myProducts}
-   renderItem ={({item})=> <Text  style={styles.element}>{item.name}</Text>}
-   />
+      <FlatList
+      data ={myProducts}
+      renderItem ={({item})=> <Text  style={styles.element}>{item.name}</Text>}
+      />
      
     </View>
   );
