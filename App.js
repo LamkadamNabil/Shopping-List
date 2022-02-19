@@ -1,36 +1,61 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button,StyleSheet, Text, View ,TextInput ,ScrollView, FlatList} from 'react-native';
+import { Button,StyleSheet, Text, View ,TextInput ,ScrollView, FlatList, Alert} from 'react-native';
 import React ,{useState} from 'react';
+import Products from './component/Products'
+import { AddProducts } from './component/AddProducts';
 export default function App() {
-  const [product ,setProduct] =useState('');
   const [myProducts ,setMyProducts] =useState([]);
-
-  const inputHandler =(valeur)=>{
-    setProduct(valeur);
-  }
-  const submitHandler =()=>{
-    const idString =Date.now.toString();
-    setMyProducts(currentMyProducts=>[{key :idString ,name :product},...currentMyProducts ])
-    setProduct('')
+  const submitHandler =(product)=>{
+    if (product.length >2){
+      const idString =Date.now.toString();
+      setMyProducts(currentMyProducts=>[{key :idString ,name :product},...currentMyProducts ])
+    }else{
+      Alert.alert(
+        'Sorry',
+        'number of characters must be greater than one ',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel'
+          },
+          {
+            text: 'UNDERSTOOD',
+            onPress: () => console.log('UNDERSTOOD'),
+          },
+          {
+            text: 'yes',
+            onPress: () => console.log('yes')
+          }
+        ],
+        {
+          cancelable:true ,
+          onDismiss :()=>{ console.warn("Dismiss")}
+        }
+      );
+    }
+    
      }
+  const deleteProduct =(key)=>{
+       setMyProducts(currentMyProducts=>{
+              return currentMyProducts.filter((product)=>{
+                   product.key !=key
+              })
+       }
+  )
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputcontainer}>
-         <TextInput 
-            style={styles.textinput}
-            placeholder="Nouveau produit"
-            onChangeText={inputHandler}
-            value={product}
-         />
-          <Button
-             title='valider'
-             onPress={submitHandler}
-          />
-      </View>
+       <AddProducts  submitHandler={submitHandler}  />
       <FlatList
       data ={myProducts}
-      renderItem ={({item})=> <Text  style={styles.element}>{item.name}</Text>}
+      renderItem ={({item})=> (
+         <Products
+          name ={item.name}
+          id_key={item.key}
+          deleteProduct={deleteProduct}
+          />)}
       />
      
     </View>
